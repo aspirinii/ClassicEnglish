@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'package:pluto_menu_bar/pluto_menu_bar.dart';
-import 'package:flutter/services.dart'; //rootbundle
-import 'dart:convert';
-import 'package:csv/csv.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
 import 'book_view.dart';
 import 'package:get/get.dart';
 
@@ -148,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Text(
                                     _bookList[index]['subtitle'],
                                     style: const TextStyle(
-                                        fontSize: 10, fontWeight: FontWeight.bold
+                                        fontSize: 12, fontWeight: FontWeight.bold
                                         ,color: Colors.white),
                                   ),
                               ),

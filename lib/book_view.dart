@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 // import 'dart:ui';
 import 'dart:async';
-// import 'package:csv/csv.dart';
+import 'package:csv/csv.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart'; //rootbundle
 import 'dart:convert';
@@ -114,6 +114,15 @@ class Sentence extends GetxController {
     contentK = json['contentK'];
   }
 
+  Sentence.fromCSV(Map<String, dynamic> js) {
+    id = js['index'];
+    active.value = false;
+    contentE = js['contentE'];
+    contentK = js['contentK'];
+  }
+
+
+
   changeActivation() {
     active.value = !active.value;
   }
@@ -121,6 +130,7 @@ class Sentence extends GetxController {
 
 class Controller extends GetxController {
   var dataFromJson;
+  var dataFromCSV;
   var listSentence;
   var map;
   late Future<dynamic> rawData;
@@ -136,10 +146,42 @@ class Controller extends GetxController {
     return output;
   }
 
+  ListToMapConvert (list){
+    List<Map<String, dynamic>> listMap  = [];
+    Map<String, dynamic> map = {};
+    print(list[0].runtimeType);
+    List<String> index = List<String>.from (list[0]);
+    // print(list.length);
+    // int listLength = list.length;
+    // print(listLength.runtimeType);
+    for (int i = 1 ; i< list.length; i++){
+        List<dynamic> content = list[i];
+        map = Map.fromIterables(index, content);
+        listMap.add(map);
+    }
+    print(listMap);
+    return listMap;
+
+  }
+
+  late Future<dynamic> rawData2;
+  Future LoadCSV () async {
+    final _rawData2 = await rootBundle.loadString("assets/frog.csv");
+    List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(_rawData2);
+    // var rowsAsMapOfValues =  rowsAsListOfValues.asMap();
+    print("Load CSV start ");
+    print(rowsAsListOfValues);
+    var mapConverted =  ListToMapConvert(rowsAsListOfValues);
+
+    print("Load CSV End ");
+
+    return mapConverted;
+  }
   @override
   onInit() {
     dataFromJson = LoadDataJson();
     // print(dataFromJson);
+    dataFromCSV = LoadCSV();
     print('onInit start');
   }
 }
@@ -153,7 +195,7 @@ class BookView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: c.dataFromJson,
+        future: c.dataFromCSV,
         builder: (BuildContext context, AsyncSnapshot snap) {
           if (snap.hasData) {
             print("Snap : ${snap.data.runtimeType}");
@@ -174,7 +216,7 @@ class BookView extends StatelessWidget {
                 body:
                   ListView(children: [
                   for (var w in snap.data)
-                    SentenceWidget(model: Sentence.fromJson(w)),
+                    SentenceWidget(model: Sentence.fromCSV(w)),
                 ]));
           } else {
             // return const Text("Loading ");

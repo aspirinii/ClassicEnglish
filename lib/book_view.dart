@@ -165,8 +165,8 @@ class Controller extends GetxController {
   }
 
   late Future<dynamic> rawData2;
-  Future LoadCSV () async {
-    final _rawData2 = await rootBundle.loadString("assets/frog.csv");
+  Future LoadCSV (String bookName) async {
+    final _rawData2 = await rootBundle.loadString("assets/${bookName}.csv");
     List<List<dynamic>> rowsAsListOfValues = const CsvToListConverter().convert(_rawData2);
     // var rowsAsMapOfValues =  rowsAsListOfValues.asMap();
     print("Load CSV start ");
@@ -179,21 +179,22 @@ class Controller extends GetxController {
   }
   @override
   onInit() {
-    dataFromJson = LoadDataJson();
+    // dataFromJson = LoadDataJson();
     // print(dataFromJson);
-    dataFromCSV = LoadCSV();
+    // dataFromCSV = LoadCSV();
     print('onInit start');
   }
 }
 
 class BookView extends StatelessWidget {
-  BookView({Key? key}) : super(key: key);
-
+  BookView({Key? key, required this.bookId}) : super(key: key);
+  String bookId;
   // Generate a dummy list
   final Controller c = Get.put(Controller());
   // final List numbers = List.generate(30, (index) => "Item $index");
   @override
   Widget build(BuildContext context) {
+    c.dataFromCSV = c.LoadCSV(bookId);
     return FutureBuilder(
         future: c.dataFromCSV,
         builder: (BuildContext context, AsyncSnapshot snap) {

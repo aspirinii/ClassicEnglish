@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
     },
     { 
       "id" : "2",
-      "name" : "1984",
-      "subtitle" : "1984",
+      "name" : "이솝우화",
+      "subtitle" : "Aesop's fable ",
     },
     {
       "id" : "3",
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                       return GestureDetector(
                         onTap: (){
                             message(context, _bookList[index]['name']);
-                            Get.to(BookView());
+                            Get.to(() => BookView(bookId : _bookList[index]['id']));
 
                           },
                         child: GridTile(
